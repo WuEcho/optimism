@@ -591,19 +591,6 @@
   },
   {
     "inputs": [],
-    "name": "l2SequenceNumber",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "l2SequenceNumber_",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "pure",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "maxClockDuration",
     "outputs": [
       {
@@ -854,7 +841,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "l2SequenceNumber",
+        "name": "l2BlockNumber",
         "type": "uint256"
       }
     ],
@@ -1130,11 +1117,6 @@
   {
     "inputs": [],
     "name": "GameNotResolved",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "GamePaused",
     "type": "error"
   },
   {

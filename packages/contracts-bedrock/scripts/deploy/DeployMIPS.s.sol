@@ -11,8 +11,6 @@ import { DeployUtils } from "scripts/libraries/DeployUtils.sol";
 // Interfaces
 import { IPreimageOracle } from "interfaces/cannon/IPreimageOracle.sol";
 import { IMIPS } from "interfaces/cannon/IMIPS.sol";
-import { IMIPS2 } from "interfaces/cannon/IMIPS2.sol";
-import { StandardConstants } from "scripts/deploy/StandardConstants.sol";
 
 /// @title DeployMIPSInput
 contract DeployMIPSInput is BaseDeployIO {
@@ -24,7 +22,7 @@ contract DeployMIPSInput is BaseDeployIO {
 
     function set(bytes4 _sel, uint256 _value) public {
         if (_sel == this.mipsVersion.selector) {
-            require(_value == StandardConstants.MIPS_VERSION, "DeployMIPS: unsupported mips version");
+            require(_value == 1 || _value == 2, "DeployMIPS: unknown mips version");
             _mipsVersion = _value;
         } else {
             revert("DeployMIPS: unknown selector");
@@ -42,7 +40,7 @@ contract DeployMIPSInput is BaseDeployIO {
 
     function mipsVersion() public view returns (uint256) {
         require(_mipsVersion != 0, "DeployMIPS: mipsVersion not set");
-        require(_mipsVersion == StandardConstants.MIPS_VERSION, "DeployMIPS: unsupported mips version");
+        require(_mipsVersion == 1 || _mipsVersion == 2, "DeployMIPS: unknown mips version");
         return _mipsVersion;
     }
 
@@ -79,13 +77,13 @@ contract DeployMIPS is Script {
     }
 
     function deployMipsSingleton(DeployMIPSInput _mi, DeployMIPSOutput _mo) internal {
+        IMIPS singleton;
         uint256 mipsVersion = _mi.mipsVersion();
         IPreimageOracle preimageOracle = IPreimageOracle(_mi.preimageOracle());
-
-        IMIPS singleton = IMIPS(
+        singleton = IMIPS(
             DeployUtils.createDeterministic({
-                _name: "MIPS64",
-                _args: DeployUtils.encodeConstructor(abi.encodeCall(IMIPS2.__constructor__, (preimageOracle, mipsVersion))),
+                _name: mipsVersion == 1 ? "MIPS" : "MIPS64",
+                _args: DeployUtils.encodeConstructor(abi.encodeCall(IMIPS.__constructor__, (preimageOracle))),
                 _salt: DeployUtils.DEFAULT_SALT
             })
         );

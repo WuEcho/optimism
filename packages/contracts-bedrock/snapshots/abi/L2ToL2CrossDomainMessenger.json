@@ -128,45 +128,6 @@
         "type": "uint256"
       },
       {
-        "internalType": "uint256",
-        "name": "_nonce",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "_sender",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_target",
-        "type": "address"
-      },
-      {
-        "internalType": "bytes",
-        "name": "_message",
-        "type": "bytes"
-      }
-    ],
-    "name": "resendMessage",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "messageHash_",
-        "type": "bytes32"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_destination",
-        "type": "uint256"
-      },
-      {
         "internalType": "address",
         "name": "_target",
         "type": "address"
@@ -181,30 +142,11 @@
     "outputs": [
       {
         "internalType": "bytes32",
-        "name": "messageHash_",
+        "name": "",
         "type": "bytes32"
       }
     ],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "sentMessages",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -258,12 +200,6 @@
         "indexed": true,
         "internalType": "bytes32",
         "name": "messageHash",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "returnDataHash",
         "type": "bytes32"
       }
     ],
@@ -319,7 +255,7 @@
   },
   {
     "inputs": [],
-    "name": "InvalidMessage",
+    "name": "InvalidChainId",
     "type": "error"
   },
   {
@@ -339,6 +275,11 @@
   },
   {
     "inputs": [],
+    "name": "MessageTargetCrossL2Inbox",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "MessageTargetL2ToL2CrossDomainMessenger",
     "type": "error"
   },
@@ -350,6 +291,11 @@
   {
     "inputs": [],
     "name": "ReentrantCall",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "TargetCallFailed",
     "type": "error"
   }
 ]

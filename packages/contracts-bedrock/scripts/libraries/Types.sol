@@ -14,7 +14,6 @@ library Types {
         address AnchorStateRegistry;
         address OptimismMintableERC20Factory;
         address OptimismPortal;
-        address ETHLockbox;
         address SystemConfig;
         address L1ERC721Bridge;
         address ProtocolVersions;
