@@ -95,6 +95,59 @@ generate_binding() {
     print_info "$contract_name 绑定生成完成: $go_output"
 }
 
+# 生成StandardValidator的多个版本绑定
+generate_standardvalidator_bindings() {
+    local output_dir=$1
+
+    print_info "生成 StandardValidator 的多个版本绑定..."
+
+    # 定义StandardValidator的版本
+    local versions=(
+        "StandardValidatorBase:standardvalidatorbase"
+        "StandardValidatorV180:standardvalidatorv180"
+        "StandardValidatorV200:standardvalidatorv200"
+    )
+
+    for version_pair in "${versions[@]}"; do
+        IFS=':' read -r contract_name package_name <<< "$version_pair"
+
+        print_info "生成 $contract_name 的绑定..."
+
+        # 创建输出目录
+        mkdir -p "$output_dir"
+
+        # 提取ABI和字节码
+        local abi_file="packages/contracts-bedrock/forge-artifacts/StandardValidator.sol/$contract_name.json"
+        local abi_output="$output_dir/${package_name}.abi"
+        local bin_output="$output_dir/${package_name}.bin"
+        local go_output="$output_dir/${package_name}.go"
+
+        if [ ! -f "$abi_file" ]; then
+            print_warning "找不到 $abi_file，跳过 $contract_name"
+            continue
+        fi
+
+        # 提取ABI
+        jq '.abi' "$abi_file" > "$abi_output"
+
+        # 提取字节码
+        jq -r '.bytecode.object' "$abi_file" > "$bin_output"
+
+        # 生成Go绑定
+        abigen \
+            --abi "$abi_output" \
+            --bin "$bin_output" \
+            --pkg "$package_name" \
+            --out "$go_output" \
+            --type "$contract_name"
+
+        # 清理临时文件
+        rm "$abi_output" "$bin_output"
+
+        print_info "$contract_name 绑定生成完成: $go_output"
+    done
+}
+
 # 生成所有绑定
 generate_all_bindings() {
     print_info "开始生成所有Go绑定..."
@@ -102,6 +155,7 @@ generate_all_bindings() {
     # 定义合约列表 - 使用数组而不是关联数组
     local contracts=(
         "OptimismPortal2:optimismportal2"
+        "OptimismPortalInterop:optimismportalinterop"
         "L2OutputOracle:l2outputoracle"
         "L2ToL1MessagePasser:l2tol1messagepasser"
         "DisputeGameFactory:disputegamefactory"
@@ -136,7 +190,6 @@ generate_all_bindings() {
         "DataAvailabilityChallenge:dataavailabilitychallenge"
         "OPContractsManager:opcontractsmanager"
         "OPPrestateUpdater:opprestateupdater"
-        "StandardValidator:standardvalidator"
         "ResourceMetering:resourcemetering"
         "ProtocolVersions:protocolversions"
     )
@@ -147,6 +200,9 @@ generate_all_bindings() {
         output_dir="bindings-output"
         generate_binding "$contract_name" "$package_name" "$output_dir"
     done
+
+    # 生成StandardValidator的多个版本
+    generate_standardvalidator_bindings "bindings-output"
 
     print_info "所有绑定生成完成"
 }
